@@ -2,25 +2,10 @@
 {% block content %}
 
 <h1>You Lose</h1>
-<table>
-  <thead>
-    <tr>
-        {% for key, value in result.items() %}
-            <th>{{ key }}</th>
+<h2>Answer was {{pick}}</h2>
+<form method="POST">
 
-        {% endfor %}
+    <input type="submit" name="submit_button" value="Restart">
 
-    </tr>
-  </thead>
-  <tbody>
-    {% for test in postspick %}
-   <tr>
-       {% for key, value in test.items() %}
-       <td> {{ value }} </td>
-       {% endfor %}
-   </tr>
-  {% endfor %}
-
-  </tbody>
-</table>
+</form>
 {% endblock content %}

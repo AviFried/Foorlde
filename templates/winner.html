@@ -2,4 +2,10 @@
 {% block content %}
 
 <h1>Winner!</h1>
+<h2>Answer was {{pick}}</h2>
+<form method="POST">
+
+    <input type="submit" name="submit_button" value="Restart">
+
+</form>
 {% endblock content %}
