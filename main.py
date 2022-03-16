@@ -158,7 +158,7 @@ def home():
                 resp1 = make_response(
                     render_template('home.html', posts=rows, result=response, names=names, tries=tries,
                                     invalid=invalid))
-                resp1.set_cookie('posts', json.dumps(rows))
+                resp1.set_cookie('rows', json.dumps(rows))
                 resp1.set_cookie('tries', str(tries))
                 resp1.set_cookie('pick', json.dumps(pick.to_dict()))
                 return resp1
@@ -246,7 +246,7 @@ def home():
 
         if guessRow.iloc[0]['Name'] == pick.iloc[0]['Name']:
             return render_template('winner.html', pick = str(pick.iloc[0]['Name']))
-        elif tries > 7:
+        elif tries > 7 or len(rows) >8:
             return render_template('loser.html', pick = str(pick.iloc[0]['Name']))
         else:
             tries = tries +1
