@@ -20,27 +20,36 @@
               {% for post in posts %}
                 <h1>{{post.author}}</h1>
               {% endfor %}
-              <table>
-  <thead>
-    <tr>
-        {% for key, value in result.items() %}
-            <th>{{ key }}</th>
+              <div>
+              <table class = "table table-bordered table-hover ">
+                  <thead class = "thead-light">
+                    <tr>
+                        {% for key, value in result.items() %}
+                            <th scope = 'col'>{{ key }}</th>
 
-        {% endfor %}
+                        {% endfor %}
 
-    </tr>
-  </thead>
-  <tbody>
-    {% for test in posts %}
-   <tr>
-       {% for key, value in test.items() %}
-       <td> {{ value }} </td>
-       {% endfor %}
-   </tr>
-  {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for test in posts %}
+                   <tr>
 
-  </tbody>
-</table>
+                       {% for value in test %}
+                       {% if    value[0] == 'Correct' %}
+                            <td class="table-success"> {{ value[1] }} </td>
+                       {% elif value[0] == 'Incorrect' %}
+                       <td class= "table-danger"> {{ value[1] }} </td>
+                        {% endif %}
+
+                       {% endfor %}
+
+                   </tr>
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+                  </div>
           </div>
         </article>
 
