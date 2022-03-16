@@ -127,6 +127,9 @@ data = data[data.Number != '']
 names = data['Name'].tolist()
 past = pd.DataFrame()
 rows = []
+pickable = data[data['Name'].isin(starters)]
+
+pickdaily= pickable.sample()
 @app.route("/",methods = {'GET','POST'})
 @app.route("/home",methods = {'GET','POST'})
 def home():
@@ -258,23 +261,125 @@ def home():
     resp1.set_cookie('pick', json.dumps(pick.to_dict()))
     return resp1
 
+@app.route("/daily",methods = {'GET','POST'})
+def daily():
+    daily = True
+    names = data['Name'].tolist()
+    pickable = data[data['Name'].isin(starters)]
+    if not request.cookies.get('rowsdaily'):
+        rowsdaily = []
+    else:
+        rowsdaily= json.loads(request.cookies.get('rowsdaily'))
+    if not request.cookies.get('triesdaily'):
+        triesdaily = 1
+    else:
+        triesdaily = int(request.cookies.get('triesdaily'))
 
+
+    response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃', 'Pos': 'rb', 'Weight': '223⌄','Confrence':'NFC' ,'Division': 'afc east', 'Team': ' buffalo bills '}
+    invalid = False
+    if request.method == 'POST':
+        text = request.form['playerName']
+        processed_text = text
+        guess = processed_text
+        row = []
+        if guess not in names:
+            invalid = True
+            print(invalid)
+            return render_template('home.html', posts=rowsdaily, result=response, names=names, tries=triesdaily, invalid = invalid)
+        print(guess)
+        guessRow = data[data['Name'] == str(guess)]
+
+        if int(guessRow.iloc[0]['Number']) == int(pickdaily.iloc[0]['Number']):
+            response['Number'] = str(guessRow.iloc[0]['Number'])
+            row.append(['Correct',str(guessRow.iloc[0]['Number'])])
+        if int(guessRow.iloc[0]['Number']) > int(pickdaily.iloc[0]['Number']):
+            response['Number'] = str(str(guessRow.iloc[0]['Number']) + "⌄")
+            row.append(['Incorrect',str(str(guessRow.iloc[0]['Number']) + "⌄")])
+        if int(guessRow.iloc[0]['Number']) < int(pickdaily.iloc[0]['Number']):
+            response['Number'] = str(str(guessRow.iloc[0]['Number']) + "⌃")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Number']) + "⌃")])
+
+        if guessRow.iloc[0]['Name'] == pickdaily.iloc[0]['Name']:
+            response['Name'] = guessRow.iloc[0]['Name'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Name']])
+        else:
+            response['Name'] = guessRow.iloc[0]['Name'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Name']])
+
+        if int(guessRow.iloc[0]['Age']) == int(pickdaily.iloc[0]['Age']):
+            response['Age'] = str(guessRow.iloc[0]['Age'])
+            row.append(['Correct', str(guessRow.iloc[0]['Age'])])
+        if int(guessRow.iloc[0]['Age']) > int(pickdaily.iloc[0]['Age']):
+            response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌄")
+            row.append(['Incorrect',str(str(guessRow.iloc[0]['Age']) + "⌄")])
+        if int(guessRow.iloc[0]['Age']) < int(pickdaily.iloc[0]['Age']):
+            response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌃")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Age']) + "⌃")])
+
+        if guessRow.iloc[0]['Pos'] == pickdaily.iloc[0]['Pos']:
+            response['Pos'] = guessRow.iloc[0]['Pos'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Pos']])
+        else:
+            response['Pos'] = guessRow.iloc[0]['Pos'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Pos']])
+
+        if int(guessRow.iloc[0]['Weight']) == int(pickdaily.iloc[0]['Weight']):
+            response['Weight'] = str(guessRow.iloc[0]['Weight'])
+            row.append(['Correct', str(guessRow.iloc[0]['Weight'])])
+        if int(guessRow.iloc[0]['Weight']) > int(pickdaily.iloc[0]['Weight']):
+            response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌄")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌄")])
+        if int(guessRow.iloc[0]['Weight']) < int(pickdaily.iloc[0]['Weight']):
+            response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌃")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌃")])
+
+        guessconf= guessRow.iloc[0]['Division'].split()[0]
+        pickconf = pickdaily.iloc[0]['Division'].split()[0]
+        if guessconf == pickconf:
+            response['Confrence'] = guessconf.upper()
+            row.append(['Correct', guessconf])
+        else:
+            response['Confrence'] = guessconf.lower()
+            row.append(['Incorrect', guessconf])
+
+        if guessRow.iloc[0]['Division'] == pickdaily.iloc[0]['Division']:
+            response['Division'] = guessRow.iloc[0]['Division'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Division']])
+        else:
+            response['Division'] = guessRow.iloc[0]['Division'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Division']])
+
+        if guessRow.iloc[0]['Team'] == pickdaily.iloc[0]['Team']:
+            response['Team'] = guessRow.iloc[0]['Team'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Team']])
+        else:
+            response['Team'] = guessRow.iloc[0]['Team'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Team']])
+
+        if guessRow.iloc[0]['Name'] == pickdaily.iloc[0]['Name']:
+            return render_template('winner.html', pick = str(pickdaily.iloc[0]['Name']), daily=daily)
+        elif triesdaily > 7 or len(rows) >8:
+            return render_template('loser.html', pick = str(pickdaily.iloc[0]['Name']), daily=daily, result= response, posts = rowsdaily)
+        else:
+            triesdaily = triesdaily +1
+        rowsdaily.append(row)
+
+    resp1 = make_response(render_template('home.html', posts=rowsdaily, result = response, names = names, tries = triesdaily, invalid = invalid))
+    resp1.set_cookie('rowsdaily', json.dumps(rowsdaily))
+    resp1.set_cookie('triesdaily', str(triesdaily))
+    return resp1
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
 
-@app.route('/get-cookie/')
-def get_cookie():
-    username = request.cookies.get('rows')
+@app.route("/dailyrestart")
+def dailyrestart():
+    resp1 = make_response("Done")
+    resp1.set_cookie('rowsdaily', json.dumps([]))
+    resp1.set_cookie('triesdaily', str(1))
+    return resp1
 
-@app.route('/cookie/')
-def cookie():
-    if not request.cookies.get('foo'):
-        res = make_response("Setting a cookie")
-        res.set_cookie('foo', 'bar', max_age=60*60*24*365*2)
-    else:
-        res = make_response("Value of cookie foo is {}".format(request.cookies.get('foo')))
-    return res
 
 if __name__ == '__main__':
     data = pd.read_csv('output.csv')
