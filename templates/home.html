@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+
+        <article class="media content-section">
+          <div class="media-body">
+              {% if invalid == True %}
+              <h1>No Player Found. Try Again.</h1>
+              {% endif %}
+              <form method="POST">
+
+                <input list="choices" id="myInput" type="text" name = 'playerName' placeholder='{{tries}} out 8'>
+                <input type="submit">
+                  <datalist id="choices">
+                    {% for name in names %}
+                      <option value = '{{name}}'>
+                    {% endfor %}
+                  </datalist>
+
+              </form>
+              {% for post in posts %}
+                <h1>{{post.author}}</h1>
+              {% endfor %}
+              <table>
+  <thead>
+    <tr>
+        {% for key, value in result.items() %}
+            <th>{{ key }}</th>
+
+        {% endfor %}
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for test in posts %}
+   <tr>
+       {% for key, value in test.items() %}
+       <td> {{ value }} </td>
+       {% endfor %}
+   </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+          </div>
+        </article>
+
+
+{% endblock content %}
