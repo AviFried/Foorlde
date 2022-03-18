@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<input id="autoComplete" type="text" autocapitalize="on">
+<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/autoComplete.min.js"></script>
+   <script>
+        const autoCompleteJS = new autoComplete({
+            placeHolder: "1 0f 8",
+            data: {
+                src: [
+                {% for name in names %}
+                      "{{name}}",
+                    {% endfor %}
+                    ],
+                cache: true,
+            },
+            resultItem: {
+                highlight: true
+            },
+            events: {
+                input: {
+                    selection: (event) => {
+                        const selection = event.detail.selection.value;
+                        autoCompleteJS.input.value = selection;
+                    }
+                }
+            }
+        });
+    </script>
+
+{% endblock content %}
