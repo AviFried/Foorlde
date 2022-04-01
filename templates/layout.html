@@ -4,7 +4,14 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/css/autoComplete.min.css">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">
+    </script>
+
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css"
+        rel="stylesheet" type="text/css" />
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -31,13 +38,85 @@
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="/">Home</a>
               <a class="nav-item nav-link" href="/daily">Daily Puzzle</a>
+
+
             </div>
             <!-- Navbar Right Side -->
-
+<div class="nav navbar-nav navbar-right"  id="navbarToggle">
+    <div class="navbar-nav mr-auto">
+      <a class="nav-item nav-link" data-toggle="modal" data-target="#statsModal">Stats</a>
+    <a class="nav-item nav-link" data-toggle="modal" data-target="#helpModal">
+         <img alt="Qries" src="/static/mark.png" width="18" height="18">
+      </a>
+    </div>
+    </div>
           </div>
         </div>
       </nav>
     </header>
+    <!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="statsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Stats</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="container">
+              <div class = "row">
+          <div class="col-sm">
+          <h3 class="text-center">Games Played:</h3>
+          <h3 class="text-center">{{ statWin+statLoss }}</h3>
+              </div>
+          <div class="col-sm">
+          <h3 class="text-center">Win Percentage</h3>
+          <h3 class="text-center">{% if statLoss+statWin != 0 %} {{ 100*(statWin/(statLoss+statWin)) }}% {% else %} 0% {% endif %}</h3>
+              </div>
+                  </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Help</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+              <div class = "row">
+          <div class="col-sm">
+              <ul>
+          <li >A secret player has been chosen.</li>
+          <li >Start by a guessing a player in the NFL</li>
+          <li >You will then receive a comparison between the player you have chosen and the secret player</li>
+          <li >For each category the player will be compared to the secret player</li>
+          <li >If the category is highlighted green that means that it is true about the secret player</li>
+          <li >If the category is highlighted red that means that it is not true about the secret player</li>
+          <li >If the category is a number then an arrow will compare it to the secret player</li>
+          <li >If the arrow is down then the secret player's number is lower and if it is pointed up the secret players number is higher</li>
+              </ul>
+              </div>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
     <main role="main" class="container ">
       <div class="row  my-auto">
 
