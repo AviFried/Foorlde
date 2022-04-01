@@ -142,6 +142,10 @@ def home():
         rows = []
     else:
         rows= json.loads(request.cookies.get('rows'))
+    if not request.cookies.get('previous'):
+        previous = []
+    else:
+        previous= json.loads(request.cookies.get('previous'))
     if not request.cookies.get('tries'):
         tries = 1
     else:
@@ -189,7 +193,12 @@ def home():
         if guess not in names:
             invalid = True
             print(invalid)
-            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid = invalid)
+            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid = invalid, statLoss = statLoss, statWin = statWin)
+        if guess in previous:
+            invalid = True
+            print(invalid)
+            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid=invalid, statLoss = statLoss, statWin = statWin)
+        previous.append(guess)
         print(guess)
         guessRow = data[data['Name'] == str(guess)]
         if int(guessRow.iloc[0]['Number']) == int(pick.iloc[0]['Number']):
@@ -289,12 +298,15 @@ def home():
         if guessRow.iloc[0]['Name'] == pick.iloc[0]['Name']:
             statWin += 1
             resp1 = make_response(render_template('winner.html', pick = str(pick.iloc[0]['Name']), statLoss = statLoss, statWin = statWin))
+            previous = []
+            resp1.set_cookie('previous', json.dumps(previous))
             resp1.set_cookie('statWin', str(statWin))
             return resp1
         elif tries > 7 or len(rows) >8:
             statLoss += 1
             resp1 = make_response(render_template('loser.html', pick = str(pick.iloc[0]['Name']),result = response, posts = rows, statLoss = statLoss, statWin = statWin))
-
+            previous = []
+            resp1.set_cookie('previous', json.dumps(previous))
             resp1.set_cookie('statLoss', str(statLoss))
             return resp1
         else:
@@ -304,6 +316,7 @@ def home():
     resp1 = make_response(render_template('home.html', posts=rows, result = response, names = names, tries = tries, invalid = invalid, statLoss = statLoss, statWin = statWin))
     resp1.set_cookie('rows', json.dumps(rows))
     resp1.set_cookie('tries', str(tries))
+    resp1.set_cookie('previous', json.dumps(previous))
     resp1.set_cookie('pick', json.dumps(pick.to_dict()))
     return resp1
 
@@ -440,6 +453,10 @@ def daily():
         rowsdaily = []
     else:
         rowsdaily= json.loads(request.cookies.get('rowsdaily'))
+    if not request.cookies.get('previousDaily'):
+        previousDaily = []
+    else:
+        previousDaily= json.loads(request.cookies.get('previousDaily'))
     if not request.cookies.get('triesdaily'):
         triesdaily = 1
     else:
@@ -466,6 +483,11 @@ def daily():
             print(invalid)
             return render_template('home.html', posts=rowsdaily, result=response, names=names, tries=triesdaily,statLoss=dailyStatLoss,
                                 statWin=dailyStatWin, invalid = invalid)
+        if guess in previousDaily:
+            invalid = True
+            print(invalid)
+            return render_template('home.html', posts=rowsdaily, result=response, names=names, tries= triesdaily, invalid=invalid, statLoss = dailyStatLoss, statWin = dailyStatWin)
+        previousDaily.append(guess)
         print(guess)
         guessRow = data[data['Name'] == str(guess)]
 
@@ -566,6 +588,8 @@ def daily():
             dailyStatWin += 1
             resp1 = make_response(render_template('winner.html', pick= str(pickdaily.iloc[0]['Name']), statLoss=dailyStatLoss, statWin=dailyStatWin, daily = daily, result= response, posts = rowsdaily))
             resp1.set_cookie('dailyStatWin', str(dailyStatWin))
+            previousDaily = []
+            resp1.set_cookie('previous', json.dumps(previousDaily))
             return resp1
         elif triesdaily > 7 or len(rows) >8:
             dailyStatLoss += 1
@@ -573,6 +597,8 @@ def daily():
                 render_template('winner.html', pick=str(pickdaily.iloc[0]['Name']), statLoss=dailyStatLoss,
                                 statWin=dailyStatWin, daily=daily, result=response, posts=rowsdaily))
             resp1.set_cookie('dailyStatLoss', str(dailyStatLoss))
+            previousDaily = []
+            resp1.set_cookie('previous', json.dumps(previousDaily))
             return resp1
         else:
             triesdaily = triesdaily +1
@@ -582,6 +608,7 @@ def daily():
                                 statWin=dailyStatWin, invalid = invalid))
     resp1.set_cookie('rowsdaily', json.dumps(rowsdaily))
     resp1.set_cookie('triesdaily', str(triesdaily))
+    resp1.set_cookie('previousDaily', json.dumps(previousDaily))
     return resp1
 @app.route("/about")
 def about():
