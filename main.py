@@ -604,7 +604,7 @@ def daily():
         elif triesdaily > 7 or len(rows) >8:
             dailyStatLoss += 1
             resp1 = make_response(
-                render_template('winner.html', pick=str(pickdaily.iloc[0]['Name']), statLoss=dailyStatLoss,
+                render_template('loser.html', pick=str(pickdaily.iloc[0]['Name']), statLoss=dailyStatLoss,
                                 statWin=dailyStatWin, daily=daily, result=response, posts=rowsdaily))
             resp1.set_cookie('dailyStatLoss', str(dailyStatLoss))
             previousDaily = []
