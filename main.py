@@ -227,24 +227,29 @@ def home():
         if int(guessRow.iloc[0]['Age']) < int(pick.iloc[0]['Age']):
             response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌃")
             row.append(['Incorrect', str(str(guessRow.iloc[0]['Age']) + "⌃")])
-
+        squad1= 'error'
+        squad2="error"
         guesssquad = guessRow.iloc[0]['Pos']
         print(guesssquad)
-        if guesssquad == "QB" or "RB" or "FB" or "WR" or "TE" or "C" or "G" or "OL" or "OT":
+        offense = ["QB", "RB", "FB", "WR", "TE", "C", "G", "OL", "OT"]
+        if guesssquad in offense:
             squad1 = 'Offense'
-            print("test")
-        elif guesssquad == "DE" or "DT" or "LB" or "CB" or "S" or "OLB" or "ILB" or "CB" or "SS" or "S" or "NT":
+            print("test1")
+        defense = ["DE", "DT", "LB", "CB", "S", "OLB", "ILB", "SS", "S", "NT"]
+        if guesssquad in defense:
             squad1 = "Defense"
-            print("test")
-        elif guesssquad == "LS" or "K" or "P":
+            print("test2")
+        special = ["LS", "K", "P"]
+        if guesssquad in special:
             squad1 = "Special"
-            print("test")
+            print("test3")
         picksquad = pick.iloc[0]['Pos']
-        if picksquad == "QB" or "RB" or "FB" or "WR" or "TE" or "C" or "G" or "OL" or "OT":
+        print(picksquad)
+        if picksquad in offense:
             squad2 = 'Offense'
-        if picksquad == "DE" or "DT" or "LB" or "CB" or "S" or "OLB" or "ILB" or "CB" or "SS" or "S":
+        if picksquad in defense:
             squad2 = "Defense"
-        if picksquad == "LS" or "K" or "P":
+        if picksquad in special:
             squad2 = "Special"
         if squad1 == squad2:
             response['Offense/Defense'] = squad1.upper()
@@ -252,7 +257,7 @@ def home():
         else:
             response['Offense/Defense'] = squad1.lower()
             row.append(['Incorrect', squad1])
-
+        print(squad2)
         if guessRow.iloc[0]['Pos'] == pick.iloc[0]['Pos']:
             response['Pos'] = guessRow.iloc[0]['Pos'].upper()
             row.append(['Correct', guessRow.iloc[0]['Pos']])
@@ -265,7 +270,7 @@ def home():
             row.append(['Correct', str(guessRow.iloc[0]['Weight'])])
         if int(guessRow.iloc[0]['Weight']) > int(pick.iloc[0]['Weight']):
             response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌄")
-            row.append(['Incorrect', str(str(guessRow.iloc[0]['Number']) + "⌄")])
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌄")])
         if int(guessRow.iloc[0]['Weight']) < int(pick.iloc[0]['Weight']):
             response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌃")
             row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌃")])
@@ -520,21 +525,24 @@ def daily():
 
         guesssquad = guessRow.iloc[0]['Pos']
         print(guesssquad)
-        if guesssquad == "QB" or "RB" or "FB" or "WR" or "TE" or "C" or "G" or "OL" or "OT":
+        offense = ["QB","RB","FB","WR","TE","C","G","OL","OT"]
+        if guesssquad in offense:
             squad1 = 'Offense'
-            print("test")
-        elif guesssquad == "DE" or "DT" or "LB" or "CB" or "S" or "OLB" or "ILB" or "CB" or "SS" or "S" or "NT":
+            print("test1")
+        defense = ["DE","DT","LB","CB","S","OLB","ILB","SS","S","NT"]
+        if guesssquad in defense:
             squad1 = "Defense"
-            print("test")
-        elif guesssquad == "LS" or "K" or "P":
+            print("test2")
+        special= [ "LS","K","P"]
+        if guesssquad in special:
             squad1 = "Special"
-            print("test")
-        picksquad = pick.iloc[0]['Pos']
-        if picksquad == "QB" or "RB" or "FB" or "WR" or "TE" or "C" or "G" or "OL" or "OT":
+            print("test3")
+        picksquad = pickdaily.iloc[0]['Pos']
+        if picksquad in offense:
             squad2 = 'Offense'
-        if picksquad == "DE" or "DT" or "LB" or "CB" or "S" or "OLB" or "ILB" or "CB" or "SS" or "S":
+        if picksquad in defense:
             squad2 = "Defense"
-        if picksquad == "LS" or "K" or "P":
+        if picksquad in special:
             squad2 = "Special"
         if squad1 == squad2:
             response['Offense/Defense'] = squad1.upper()
@@ -542,7 +550,9 @@ def daily():
         else:
             response['Offense/Defense'] = squad1.lower()
             row.append(['Incorrect', squad1])
-
+        print(squad1)
+        print(squad2)
+        print(row)
 
         if guessRow.iloc[0]['Pos'] == pickdaily.iloc[0]['Pos']:
             response['Pos'] = guessRow.iloc[0]['Pos'].upper()
