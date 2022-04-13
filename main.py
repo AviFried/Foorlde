@@ -227,8 +227,8 @@ def home():
         if int(guessRow.iloc[0]['Age']) < int(pick.iloc[0]['Age']):
             response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌃")
             row.append(['Incorrect', str(str(guessRow.iloc[0]['Age']) + "⌃")])
-        squad1= 'error'
-        squad2="error"
+        squad1 = 'error'
+        squad2 ="error"
         guesssquad = guessRow.iloc[0]['Pos']
         print(guesssquad)
         offense = ["QB", "RB", "FB", "WR", "TE", "C", "G", "OL", "OT"]
@@ -522,7 +522,8 @@ def daily():
         if int(guessRow.iloc[0]['Age']) < int(pickdaily.iloc[0]['Age']):
             response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌃")
             row.append(['Incorrect', str(str(guessRow.iloc[0]['Age']) + "⌃")])
-
+        squad1 = 'error'
+        squad2 = "error"
         guesssquad = guessRow.iloc[0]['Pos']
         print(guesssquad)
         offense = ["QB","RB","FB","WR","TE","C","G","OL","OT"]
