@@ -16,16 +16,21 @@
 
               <form method="POST">
                     <div class = "form-group">
-                <input class="form-control form-control-lg" list="choices" id="myInput" type="text" name = 'playerName' placeholder='{{tries}} out 8'>
-                <input type="submit" class="form-control form-control-lg" style="margin-top: 15px;">
-                  <datalist id="choices">
-                    {% for name in names %}
-                      <option value = '{{name}}'>
-                    {% endfor %}
-                  </datalist>
+                        <div class="combobox combobox-list">
+
+                        <input id="cb1-input" class="form-control form-control-lg" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="cb1-listbox" autocomplete="off" name = 'playerName' placeholder='{{tries}} out 8'>
+                        <input type="submit" class="form-control form-control-lg" style="margin-top: 15px;">
+
+                      <ul class="list-group" role="listbox" aria-label="States">
+                          {% for name in names %}
+                          <li class="list-group-item bg-light" role="option">{{name}}</li>
+
+                                        {% endfor %}
+                      </ul>
+                    </div>
                         </div>
               </form>
-
+                 <script  src="/static/function.js"></script>
               {% for post in posts %}
                 <h1>{{post.author}}</h1>
               {% endfor %}
