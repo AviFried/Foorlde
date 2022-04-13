@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+        <div class="container">
+            <figure class="text-center">
+            <h1 class="display-1" >Foordle</h1>
+            <h3 class="display-6">A Football Player Guessing Game</h3>
+            </figure>
+        </div>
+        <article class="media content">
+          <div class="media-body">
+              <div>
+              {% if invalid == True %}
+              <h1>No Player Found. Check Spelling and Try Again.</h1>
+              {% endif %}
+                  </div>
+
+              <form method="POST">
+                    <div class = "form-group">
+                        <div class="combobox combobox-list">
+
+                        <input id="cb1-input" class="form-control form-control-lg" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="cb1-listbox" autocomplete="off" name = 'playerName' placeholder='{{tries}} out 8'>
+                        <input type="submit" class="form-control form-control-lg" style="margin-top: 15px;">
+
+                      <ul class="list-group" role="listbox" aria-label="States">
+                          {% for name in names %}
+                          <li class="list-group-item bg-light" role="option">{{name}}</li>
+
+                                        {% endfor %}
+                      </ul>
+                    </div>
+                        </div>
+              </form>
+
+              {% for post in posts %}
+                <h1>{{post.author}}</h1>
+              {% endfor %}
+              <div>
+              <table class = "table table-bordered table-hover ">
+                  <thead class = "thead-light">
+                    <tr>
+                        {% for key, value in result.items() %}
+                            <th scope = 'col'>{{ key }}</th>
+
+                        {% endfor %}
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for test in posts %}
+                   <tr>
+
+                       {% for value in test %}
+                       {% if    value[0] == 'Correct' %}
+                            <td class="table-success"> {{ value[1] }} </td>
+                       {% elif value[0] == 'Incorrect' %}
+                       <td class= "table-danger"> {{ value[1] }} </td>
+                        {% endif %}
+
+                       {% endfor %}
+
+                   </tr>
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+                  </div>
+          </div>
+        </article>
+
+
+{% endblock content %}

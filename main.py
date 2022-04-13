@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃', 'Pos': 'rb', 'Weight': '223⌄', 'Confrence': 'NFC',
+response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃','Offense/Defense': 'test', 'Pos': 'rb', 'Weight': '223⌄', 'Confrence': 'NFC',
             'Division': 'afc east', 'Team': ' buffalo bills '}
 
 data = pd.read_csv('output.csv')
