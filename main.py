@@ -235,7 +235,7 @@ def home():
         if guesssquad in offense:
             squad1 = 'Offense'
             print("test1")
-        defense = ["DE", "DT", "LB", "CB", "S", "OLB", "ILB", "SS", "S", "NT"]
+        defense = ["DE", "DT", "LB", "CB", "S", "OLB", "ILB", "SS", "S", "NT","FS"]
         if guesssquad in defense:
             squad1 = "Defense"
             print("test2")
@@ -530,7 +530,7 @@ def daily():
         if guesssquad in offense:
             squad1 = 'Offense'
             print("test1")
-        defense = ["DE","DT","LB","CB","S","OLB","ILB","SS","S","NT"]
+        defense = ["DE","DT","LB","CB","S","OLB","ILB","SS","S","NT","FS"]
         if guesssquad in defense:
             squad1 = "Defense"
             print("test2")
