@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, render_template, make_response
+from flask import Flask, render_template, url_for, request, render_template, make_response, redirect
 import pandas as pd
 import json
 from datetime import datetime, timedelta
@@ -134,6 +134,8 @@ rows = []
 pickable = data[data['Name'].isin(starters)]
 
 @app.route("/",methods = {'GET','POST'})
+def hello():
+    return redirect("/home", code=302)
 @app.route("/home",methods = {'GET','POST'})
 def home():
     daily = True
@@ -287,7 +289,8 @@ def home():
         dailyStatWin = int(request.cookies.get('dailyStatWin'))
 
 
-    response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃', 'Pos': 'rb', 'Weight': '223⌄','Confrence':'NFC' ,'Division': 'afc east', 'Team': ' buffalo bills '}
+    response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃','Offense/Defense': 'test', 'Pos': 'rb', 'Weight': '223⌄', 'Confrence': 'NFC',
+            'Division': 'afc east', 'Team': ' buffalo bills '}
     invalid = False
     if request.method == 'POST':
         text = request.form['playerName']
@@ -424,6 +427,15 @@ def home():
             return resp1
         else:
             triesdaily = triesdaily +1
+
+        for row1 in rowsdaily:
+            share1= ''
+            for row2 in row1:
+                if row2[0] == 'Incorrect':
+                    share1 += '🟥'
+                if row2[0] == 'Correct':
+                    share1 += '🟩'
+            print(share1)
 
 
     resp1 = make_response(render_template('home.html', posts=rowsdaily, result = response, names = names, tries = triesdaily,statLoss=dailyStatLoss,
