@@ -136,198 +136,9 @@ pickable = data[data['Name'].isin(starters)]
 @app.route("/",methods = {'GET','POST'})
 @app.route("/home",methods = {'GET','POST'})
 def home():
-    names = data['Name'].tolist()
-    pickable = data[data['Name'].isin(starters)]
-    if not request.cookies.get('rows'):
-        rows = []
-    else:
-        rows= json.loads(request.cookies.get('rows'))
-    if not request.cookies.get('previous'):
-        previous = []
-    else:
-        previous= json.loads(request.cookies.get('previous'))
-    if not request.cookies.get('tries'):
-        tries = 1
-    else:
-        tries = int(request.cookies.get('tries'))
-    if not request.cookies.get('pick'):
-        pickable = data[data['Name'].isin(starters)]
-        pick = pickable.sample()
-        print(pick)
-    else:
-        pick = pd.DataFrame(json.loads(request.cookies.get('pick')))
-    if not request.cookies.get('statLoss'):
-        statLoss = 0
-    else:
-        statLoss = int(request.cookies.get('statLoss'))
-    if not request.cookies.get('statWin'):
-        statWin = 0
-    else:
-        statWin = int(request.cookies.get('statWin'))
-
-
-
-    response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃',"Offense/Defense": "Offense", 'Pos': 'rb', 'Weight': '223⌄','Confrence':'NFC' ,'Division': 'afc east', 'Team': ' buffalo bills '}
-    invalid = False
-    if request.method == 'POST':
-        try:
-            if request.form['submit_button'] == 'Restart':
-                pick = pickable.sample()
-                tries = 1
-                rows = []
-                resp1 = make_response(
-                    render_template('home.html', posts=rows, result=response, names=names, tries=tries,
-                                    invalid=invalid, statLoss = statLoss, statWin = statWin))
-                resp1.set_cookie('rows', json.dumps(rows))
-                resp1.set_cookie('tries', str(tries))
-                resp1.set_cookie('pick', json.dumps(pick.to_dict()))
-                return resp1
-
-        except:
-            print('Error')
-            pass
-        text = request.form['playerName']
-        processed_text = text
-        guess = processed_text
-        row = []
-        if guess not in names:
-            invalid = True
-            print(invalid)
-            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid = invalid, statLoss = statLoss, statWin = statWin)
-        if guess in previous:
-            invalid = True
-            print(invalid)
-            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid=invalid, statLoss = statLoss, statWin = statWin)
-        previous.append(guess)
-        print(guess)
-        guessRow = data[data['Name'] == str(guess)]
-        if int(guessRow.iloc[0]['Number']) == int(pick.iloc[0]['Number']):
-            response['Number'] = str(guessRow.iloc[0]['Number'])
-            row.append(['Correct',str(guessRow.iloc[0]['Number'])])
-        if int(guessRow.iloc[0]['Number']) > int(pick.iloc[0]['Number']):
-            response['Number'] = str(str(guessRow.iloc[0]['Number']) + "⌄")
-            row.append(['Incorrect',str(str(guessRow.iloc[0]['Number']) + "⌄")])
-        if int(guessRow.iloc[0]['Number']) < int(pick.iloc[0]['Number']):
-            response['Number'] = str(str(guessRow.iloc[0]['Number']) + "⌃")
-            row.append(['Incorrect', str(str(guessRow.iloc[0]['Number']) + "⌃")])
-
-        if guessRow.iloc[0]['Name'] == pick.iloc[0]['Name']:
-            response['Name'] = guessRow.iloc[0]['Name'].upper()
-            row.append(['Correct', guessRow.iloc[0]['Name']])
-        else:
-            response['Name'] = guessRow.iloc[0]['Name'].lower()
-            row.append(['Incorrect', guessRow.iloc[0]['Name']])
-
-        if int(guessRow.iloc[0]['Age']) == int(pick.iloc[0]['Age']):
-            response['Age'] = str(guessRow.iloc[0]['Age'])
-            row.append(['Correct', str(guessRow.iloc[0]['Age'])])
-        if int(guessRow.iloc[0]['Age']) > int(pick.iloc[0]['Age']):
-            response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌄")
-            row.append(['Incorrect',str(str(guessRow.iloc[0]['Age']) + "⌄")])
-        if int(guessRow.iloc[0]['Age']) < int(pick.iloc[0]['Age']):
-            response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌃")
-            row.append(['Incorrect', str(str(guessRow.iloc[0]['Age']) + "⌃")])
-        squad1 = 'error'
-        squad2 ="error"
-        guesssquad = guessRow.iloc[0]['Pos']
-        print(guesssquad)
-        offense = ["QB", "RB", "FB", "WR", "TE", "C", "G", "OL", "OT"]
-        if guesssquad in offense:
-            squad1 = 'Offense'
-            print("test1")
-        defense = ["DE", "DT", "LB", "CB", "S", "OLB", "ILB", "SS", "S", "NT","FS"]
-        if guesssquad in defense:
-            squad1 = "Defense"
-            print("test2")
-        special = ["LS", "K", "P"]
-        if guesssquad in special:
-            squad1 = "Special"
-            print("test3")
-        picksquad = pick.iloc[0]['Pos']
-        print(picksquad)
-        if picksquad in offense:
-            squad2 = 'Offense'
-        if picksquad in defense:
-            squad2 = "Defense"
-        if picksquad in special:
-            squad2 = "Special"
-        if squad1 == squad2:
-            response['Offense/Defense'] = squad1.upper()
-            row.append(['Correct', squad1])
-        else:
-            response['Offense/Defense'] = squad1.lower()
-            row.append(['Incorrect', squad1])
-        print(squad2)
-        if guessRow.iloc[0]['Pos'] == pick.iloc[0]['Pos']:
-            response['Pos'] = guessRow.iloc[0]['Pos'].upper()
-            row.append(['Correct', guessRow.iloc[0]['Pos']])
-        else:
-            response['Pos'] = guessRow.iloc[0]['Pos'].lower()
-            row.append(['Incorrect', guessRow.iloc[0]['Pos']])
-
-        if int(guessRow.iloc[0]['Weight']) == int(pick.iloc[0]['Weight']):
-            response['Weight'] = str(guessRow.iloc[0]['Weight'])
-            row.append(['Correct', str(guessRow.iloc[0]['Weight'])])
-        if int(guessRow.iloc[0]['Weight']) > int(pick.iloc[0]['Weight']):
-            response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌄")
-            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌄")])
-        if int(guessRow.iloc[0]['Weight']) < int(pick.iloc[0]['Weight']):
-            response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌃")
-            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌃")])
-
-        guessconf= guessRow.iloc[0]['Division'].split()[0]
-        pickconf = pick.iloc[0]['Division'].split()[0]
-        if guessconf == pickconf:
-            response['Confrence'] = guessconf.upper()
-            row.append(['Correct', guessconf])
-        else:
-            response['Confrence'] = guessconf.lower()
-            row.append(['Incorrect', guessconf])
-
-
-
-        if guessRow.iloc[0]['Division'] == pick.iloc[0]['Division']:
-            response['Division'] = guessRow.iloc[0]['Division'].upper()
-            row.append(['Correct', guessRow.iloc[0]['Division']])
-        else:
-            response['Division'] = guessRow.iloc[0]['Division'].lower()
-            row.append(['Incorrect', guessRow.iloc[0]['Division']])
-
-        if guessRow.iloc[0]['Team'] == pick.iloc[0]['Team']:
-            response['Team'] = guessRow.iloc[0]['Team'].upper()
-            row.append(['Correct', guessRow.iloc[0]['Team']])
-        else:
-            response['Team'] = guessRow.iloc[0]['Team'].lower()
-            row.append(['Incorrect', guessRow.iloc[0]['Team']])
-
-        if guessRow.iloc[0]['Name'] == pick.iloc[0]['Name']:
-            statWin += 1
-            resp1 = make_response(render_template('winner.html', pick = str(pick.iloc[0]['Name']), statLoss = statLoss, statWin = statWin))
-            previous = []
-            resp1.set_cookie('previous', json.dumps(previous))
-            resp1.set_cookie('statWin', str(statWin))
-            return resp1
-        elif tries > 7 or len(rows) >8:
-            statLoss += 1
-            resp1 = make_response(render_template('loser.html', pick = str(pick.iloc[0]['Name']),result = response, posts = rows, statLoss = statLoss, statWin = statWin))
-            previous = []
-            resp1.set_cookie('previous', json.dumps(previous))
-            resp1.set_cookie('statLoss', str(statLoss))
-            return resp1
-        else:
-            tries = tries +1
-        rows.append(row)
-    print(response)
-    resp1 = make_response(render_template('home.html', posts=rows, result = response, names = names, tries = tries, invalid = invalid, statLoss = statLoss, statWin = statWin))
-    resp1.set_cookie('rows', json.dumps(rows))
-    resp1.set_cookie('tries', str(tries))
-    resp1.set_cookie('previous', json.dumps(previous))
-    resp1.set_cookie('pick', json.dumps(pick.to_dict()))
-    return resp1
-
-@app.route("/daily",methods = {'GET','POST'})
-def daily():
     daily = True
+    ip_address = request.remote_addr
+    print('IP Adress: ', ip_address)
     pickdailylist = {'03/17/2022': 'Bobby Hart', '03/18/2022': 'Damiere Byrd', '03/19/2022': 'Robert Quinn',
                      '03/20/2022': 'Marquise Brown', '03/21/2022': 'Jack Crawford', '03/22/2022': 'Terry McLaurin',
                      '03/23/2022': 'Josey Jewell', '03/24/2022': 'Lawrence Guy', '03/25/2022': 'Montez Sweat',
@@ -594,7 +405,7 @@ def daily():
         else:
             response['Team'] = guessRow.iloc[0]['Team'].lower()
             row.append(['Incorrect', guessRow.iloc[0]['Team']])
-
+        rowsdaily.append(row)
         if guessRow.iloc[0]['Name'] == pickdaily.iloc[0]['Name']:
             dailyStatWin += 1
             resp1 = make_response(render_template('winner.html', pick= str(pickdaily.iloc[0]['Name']), statLoss=dailyStatLoss, statWin=dailyStatWin, daily = daily, result= response, posts = rowsdaily))
@@ -613,7 +424,7 @@ def daily():
             return resp1
         else:
             triesdaily = triesdaily +1
-        rowsdaily.append(row)
+
 
     resp1 = make_response(render_template('home.html', posts=rowsdaily, result = response, names = names, tries = triesdaily,statLoss=dailyStatLoss,
                                 statWin=dailyStatWin, invalid = invalid))
@@ -636,6 +447,196 @@ def dailyrestart():
 def test():
     return render_template('home.html', title='About', names = names, result= response)
 
+@app.route("/unlimited",methods = {'GET','POST'})
+def unlimited():
+    names = data['Name'].tolist()
+    pickable = data[data['Name'].isin(starters)]
+    if not request.cookies.get('rows'):
+        rows = []
+    else:
+        rows= json.loads(request.cookies.get('rows'))
+    if not request.cookies.get('previous'):
+        previous = []
+    else:
+        previous= json.loads(request.cookies.get('previous'))
+    if not request.cookies.get('tries'):
+        tries = 1
+    else:
+        tries = int(request.cookies.get('tries'))
+    if not request.cookies.get('pick'):
+        pickable = data[data['Name'].isin(starters)]
+        pick = pickable.sample()
+        print(pick)
+    else:
+        pick = pd.DataFrame(json.loads(request.cookies.get('pick')))
+    if not request.cookies.get('statLoss'):
+        statLoss = 0
+    else:
+        statLoss = int(request.cookies.get('statLoss'))
+    if not request.cookies.get('statWin'):
+        statWin = 0
+    else:
+        statWin = int(request.cookies.get('statWin'))
+
+
+
+    response = {'Number': '20.0⌃', 'Name': 'zack moss', 'Age': '24⌃',"Offense/Defense": "Offense", 'Pos': 'rb', 'Weight': '223⌄','Confrence':'NFC' ,'Division': 'afc east', 'Team': ' buffalo bills '}
+    invalid = False
+    if request.method == 'POST':
+        try:
+            if request.form['submit_button'] == 'Restart':
+                pick = pickable.sample()
+                tries = 1
+                rows = []
+                resp1 = make_response(
+                    render_template('home.html', posts=rows, result=response, names=names, tries=tries,
+                                    invalid=invalid, statLoss = statLoss, statWin = statWin))
+                resp1.set_cookie('rows', json.dumps(rows))
+                resp1.set_cookie('tries', str(tries))
+                resp1.set_cookie('pick', json.dumps(pick.to_dict()))
+                return resp1
+
+        except:
+            print('Error')
+            pass
+        text = request.form['playerName']
+        processed_text = text
+        guess = processed_text
+        row = []
+        if guess not in names:
+            invalid = True
+            print(invalid)
+            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid = invalid, statLoss = statLoss, statWin = statWin)
+        if guess in previous:
+            invalid = True
+            print(invalid)
+            return render_template('home.html', posts=rows, result=response, names=names, tries=tries, invalid=invalid, statLoss = statLoss, statWin = statWin)
+        previous.append(guess)
+        print(guess)
+        guessRow = data[data['Name'] == str(guess)]
+        if int(guessRow.iloc[0]['Number']) == int(pick.iloc[0]['Number']):
+            response['Number'] = str(guessRow.iloc[0]['Number'])
+            row.append(['Correct',str(guessRow.iloc[0]['Number'])])
+        if int(guessRow.iloc[0]['Number']) > int(pick.iloc[0]['Number']):
+            response['Number'] = str(str(guessRow.iloc[0]['Number']) + "⌄")
+            row.append(['Incorrect',str(str(guessRow.iloc[0]['Number']) + "⌄")])
+        if int(guessRow.iloc[0]['Number']) < int(pick.iloc[0]['Number']):
+            response['Number'] = str(str(guessRow.iloc[0]['Number']) + "⌃")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Number']) + "⌃")])
+
+        if guessRow.iloc[0]['Name'] == pick.iloc[0]['Name']:
+            response['Name'] = guessRow.iloc[0]['Name'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Name']])
+        else:
+            response['Name'] = guessRow.iloc[0]['Name'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Name']])
+
+        if int(guessRow.iloc[0]['Age']) == int(pick.iloc[0]['Age']):
+            response['Age'] = str(guessRow.iloc[0]['Age'])
+            row.append(['Correct', str(guessRow.iloc[0]['Age'])])
+        if int(guessRow.iloc[0]['Age']) > int(pick.iloc[0]['Age']):
+            response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌄")
+            row.append(['Incorrect',str(str(guessRow.iloc[0]['Age']) + "⌄")])
+        if int(guessRow.iloc[0]['Age']) < int(pick.iloc[0]['Age']):
+            response['Age'] = str(str(guessRow.iloc[0]['Age']) + "⌃")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Age']) + "⌃")])
+        squad1 = 'error'
+        squad2 ="error"
+        guesssquad = guessRow.iloc[0]['Pos']
+        print(guesssquad)
+        offense = ["QB", "RB", "FB", "WR", "TE", "C", "G", "OL", "OT"]
+        if guesssquad in offense:
+            squad1 = 'Offense'
+            print("test1")
+        defense = ["DE", "DT", "LB", "CB", "S", "OLB", "ILB", "SS", "S", "NT","FS"]
+        if guesssquad in defense:
+            squad1 = "Defense"
+            print("test2")
+        special = ["LS", "K", "P"]
+        if guesssquad in special:
+            squad1 = "Special"
+            print("test3")
+        picksquad = pick.iloc[0]['Pos']
+        print(picksquad)
+        if picksquad in offense:
+            squad2 = 'Offense'
+        if picksquad in defense:
+            squad2 = "Defense"
+        if picksquad in special:
+            squad2 = "Special"
+        if squad1 == squad2:
+            response['Offense/Defense'] = squad1.upper()
+            row.append(['Correct', squad1])
+        else:
+            response['Offense/Defense'] = squad1.lower()
+            row.append(['Incorrect', squad1])
+        print(squad2)
+        if guessRow.iloc[0]['Pos'] == pick.iloc[0]['Pos']:
+            response['Pos'] = guessRow.iloc[0]['Pos'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Pos']])
+        else:
+            response['Pos'] = guessRow.iloc[0]['Pos'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Pos']])
+
+        if int(guessRow.iloc[0]['Weight']) == int(pick.iloc[0]['Weight']):
+            response['Weight'] = str(guessRow.iloc[0]['Weight'])
+            row.append(['Correct', str(guessRow.iloc[0]['Weight'])])
+        if int(guessRow.iloc[0]['Weight']) > int(pick.iloc[0]['Weight']):
+            response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌄")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌄")])
+        if int(guessRow.iloc[0]['Weight']) < int(pick.iloc[0]['Weight']):
+            response['Weight'] = str(str(guessRow.iloc[0]['Weight']) + "⌃")
+            row.append(['Incorrect', str(str(guessRow.iloc[0]['Weight']) + "⌃")])
+
+        guessconf= guessRow.iloc[0]['Division'].split()[0]
+        pickconf = pick.iloc[0]['Division'].split()[0]
+        if guessconf == pickconf:
+            response['Confrence'] = guessconf.upper()
+            row.append(['Correct', guessconf])
+        else:
+            response['Confrence'] = guessconf.lower()
+            row.append(['Incorrect', guessconf])
+
+
+
+        if guessRow.iloc[0]['Division'] == pick.iloc[0]['Division']:
+            response['Division'] = guessRow.iloc[0]['Division'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Division']])
+        else:
+            response['Division'] = guessRow.iloc[0]['Division'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Division']])
+
+        if guessRow.iloc[0]['Team'] == pick.iloc[0]['Team']:
+            response['Team'] = guessRow.iloc[0]['Team'].upper()
+            row.append(['Correct', guessRow.iloc[0]['Team']])
+        else:
+            response['Team'] = guessRow.iloc[0]['Team'].lower()
+            row.append(['Incorrect', guessRow.iloc[0]['Team']])
+        rows.append(row)
+        if guessRow.iloc[0]['Name'] == pick.iloc[0]['Name']:
+            statWin += 1
+            resp1 = make_response(render_template('winner.html', pick = str(pick.iloc[0]['Name']), statLoss = statLoss, statWin = statWin))
+            previous = []
+            resp1.set_cookie('previous', json.dumps(previous))
+            resp1.set_cookie('statWin', str(statWin))
+            return resp1
+        elif tries > 7 or len(rows) >8:
+            statLoss += 1
+            resp1 = make_response(render_template('loser.html', pick = str(pick.iloc[0]['Name']),result = response, posts = rows, statLoss = statLoss, statWin = statWin))
+            previous = []
+            resp1.set_cookie('previous', json.dumps(previous))
+            resp1.set_cookie('statLoss', str(statLoss))
+            return resp1
+        else:
+            tries = tries +1
+
+    print(response)
+    resp1 = make_response(render_template('home.html', posts=rows, result = response, names = names, tries = tries, invalid = invalid, statLoss = statLoss, statWin = statWin))
+    resp1.set_cookie('rows', json.dumps(rows))
+    resp1.set_cookie('tries', str(tries))
+    resp1.set_cookie('previous', json.dumps(previous))
+    resp1.set_cookie('pick', json.dumps(pick.to_dict()))
+    return resp1
 
 
 

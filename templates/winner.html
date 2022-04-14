@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-
-<h1>Winner!</h1>
-<h2>Answer was {{pick}}</h2>
+<article class="media content">
+<div class="media-body">
+      <figure class="text-center">
+<h1 class="display-3" >You Win</h1>
+<h2 class="display-6" >Answer was {{pick}}</h2>
 {% if daily != True %}
 <form method="POST">
 
@@ -10,4 +12,35 @@
 
 </form>
 {% endif %}
+      </figure>
+<table class = "table table-bordered table-hover ">
+                  <thead class = "thead-light">
+                    <tr>
+                        {% for key, value in result.items() %}
+                            <th scope = 'col'>{{ key }}</th>
+
+                        {% endfor %}
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for test in posts %}
+                   <tr>
+
+                       {% for value in test %}
+                       {% if    value[0] == 'Correct' %}
+                            <td class="table-success"> {{ value[1] }} </td>
+                       {% elif value[0] == 'Incorrect' %}
+                       <td class= "table-danger"> {{ value[1] }} </td>
+                        {% endif %}
+
+                       {% endfor %}
+
+                   </tr>
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+</div>
+</article>
 {% endblock content %}
